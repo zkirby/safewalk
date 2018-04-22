@@ -36,7 +36,7 @@ function resolveMapsURL(start, end) {
     return "https://maps.googleapis.com/maps/api/directions/json?origin="
         + start.replace(" ", "+")
         + "&destination=" + end.replace(" ", "+")
-        + "&key=AIzaSyCDNySaeC0oZMGFPmR2Xj8PJjXPU7cR7bs&mode=walking";
+        + "&key=AIzaSyCDNySaeC0oZMGFPmR2Xj8PJjXPU7cR7bs&mode=walking&alternatives=true";
 
 }
 
