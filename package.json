@@ -15,9 +15,6 @@
     "ios": "react-native-scripts ios",
     "test": "jest"
   },
-  "jest": {
-    "preset": "jest-expo"
-  },
   "dependencies": {
     "expo": "^26.0.0",
     "google-maps-react": "^2.0.0",

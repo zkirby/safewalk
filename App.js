@@ -2,6 +2,7 @@ import React from 'react';
 import MapSection from './components/MapSection';
 import SearchBar from './components/SearchBar';
 import { StyleSheet, Text, View } from 'react-native';
+import InfoAll from './components/info/info_all';
 
 export default class App extends React.Component {
   render() {
@@ -12,6 +13,7 @@ export default class App extends React.Component {
           mapData={GoogleMapData}
           crimes={FakeCrimeData}
         />
+        <InfoAll />
       </View>
     );
   }
