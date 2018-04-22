@@ -23,7 +23,7 @@ const styles = {
   outerContainer: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-end'
   }
 }
 

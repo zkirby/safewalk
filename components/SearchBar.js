@@ -42,7 +42,8 @@ const styles = {
 		paddingRight: 24,
 		flex: 1,
 		flexDirection: "column",
-		justifyContent: "center"
+		justifyContent: "center",
+		zIndex: 10,
 	},
 
 	button: {
