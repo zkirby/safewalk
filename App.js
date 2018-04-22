@@ -2,6 +2,7 @@ import React from 'react';
 import MapSection from './components/MapSection';
 import SearchBar from './components/SearchBar';
 import { StyleSheet, Text, View } from 'react-native';
+import 
 
 export default class App extends React.Component {
   render() {
