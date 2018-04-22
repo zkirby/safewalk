@@ -4,17 +4,36 @@ import SearchBar from './components/SearchBar';
 import { StyleSheet, Text, View } from 'react-native';
 import InfoAll from './components/info/info_all';
 import SwiperView from './components/SwiperView';
+import Event from './assets/psub';
+import utils from './assets/utils';
 
 export default class App extends React.Component {
   render() {
+    let pubevent = new Event();
+    let routes = utils.getRoutesAndScores("UC Berkeley", "2534 Piedmont Ave, Berkeley CA");
+
+    let render_views = [];
+    let avg_rating = 0;
+    let avg_duration = 0;
+
+    for (let i=0; i<routes.length; i++) {
+        let { duration } = routes[i][1]["legs"];
+        let rating = utils.getSafetyRating(routes[i][0]);
+        avg_duration += duration;
+        avg_rating += rating;
+
+        render_views.push(<Info key={i + ''} name={"Route" + (i+1)} rating={rating} time={duration}/>)
+    }
+
     return (
       <View style={styles.outerContainer}>
         <SearchBar />
         <MapSection 
           mapData={GoogleMapData}
           crimes={FakeCrimeData}
+          pubsub={pubevent}
         />
-        <InfoAll />
+        <SwiperView pubsub={pubevent} views={[<InfoAll avg_dur={avg_duration/render_views.length} rating={utils.getSafetyRating(avg_rating/render_views.length)} rlen={render_views.length}/>, ...render_views]}/>
       </View>
     );
   }
