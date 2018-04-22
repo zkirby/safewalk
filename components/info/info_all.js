@@ -16,18 +16,35 @@ export default class InfoAll extends React.Component  {
 
         let bubbles = [];
         for (let i=0; i<routes_length; i++) {
-            bubbles.push(<Text key={i + ''} class="bubble"></Text>);
+            bubbles.push(<Text key={i + ''} className="bubble"></Text>);
         }
 
         return (
-            <View id="info_all">
+            <View id="info_all" style={styles.container}>
                 { bubbles }
-                <Text class="routes-found">{routes_length} Routes Found</Text>
+                <Text className="routes-found" style={styles.title}> {routes_length} Routes Found </Text>
                 <View id="lower_text_body">
-                    <Text class="average_safety" style={{"color":rating["color"]}}>Average Safety: { rating["message"] }</Text>
-                    <Text class="average_time">Average Time: { rating_ag_time }</Text>
+                    <Text className="average_safety" style={Object.assign({"color":rating["color"]}, styles.text)}>Average Safety: { rating["message"] }</Text>
+                    <Text className="average_time" style={styles.text}>Average Time: { rating_ag_time }</Text>
                 </View> 
             </View>
         )
+    }
+}
+
+const styles = {
+    container: {
+        height: "20%",
+        width: "100%",
+        backgroundColor: "#FAFAFA",
+
+        
+    },
+    text: {
+        fontSize: 18,
+        position: "relative"
+    },
+    title: {
+        position: "relative"
     }
 }
