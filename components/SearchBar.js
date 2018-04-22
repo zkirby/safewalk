@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, Image, Dimensions, TextInput } from 'react-native';
 import MapView from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import utils from '../../assets/utils';
+import utils from '../assets/utils';
  
 export default class SearchBar extends React.Component {
 	constructor(props) {
