@@ -1,10 +1,4 @@
 const request = new XMLHttpRequest();
-let url = resolveCrimeURL(37.3702, -122.262, 0.2);
-console.log(url);
-request.open("GET",url,false);
-
-request.send();
-console.log(request.responseText);
 
 const crime_multipliers = {
     "Arrest": .2,
@@ -18,9 +12,32 @@ const crime_multipliers = {
     "Robbery": .7
 }
 
-function resolveCrimeURL(lat, lon, radius){
-    return "https://api.spotcrime.com/crimes.json?lat=" + lat + "&lon=" + lon + "&radius=" + radius 
-    + "&key=heythisisforpublicspotcrime.comuse-forcommercial-or-research-use-call-877.410.1607-or-email-pyrrhus-at-spotcrime.com"
+
+ function getRoutesAndScores(start, end) {
+    let mapsURL = resolveMapsURL(start, end);
+    request.open("GET", mapsURL, false);
+    request.send();
+    let out = [];
+    let routes = JSON.parse(request.responseText)["routes"];
+    for (let route of routes) {
+        out.push({ score: getRouteScore(route), route: route });
+    }
+    return out;
+}
+
+
+
+function resolveCrimeURL(lat, lon, radius) {
+    return "https://api.spotcrime.com/crimes.json?lat=" + lat + "&lon=" + lon + "&radius=" + radius
+        + "&key=heythisisforpublicspotcrime.comuse-forcommercial-or-research-use-call-877.410.1607-or-email-pyrrhus-at-spotcrime.com"
+}
+
+function resolveMapsURL(start, end) {
+    return "https://maps.googleapis.com/maps/api/directions/json?origin="
+        + start.replace(" ", "+")
+        + "&destination=" + end.replace(" ", "+")
+        + "&key=AIzaSyCDNySaeC0oZMGFPmR2Xj8PJjXPU7cR7bs&mode=walking&alternatives=true";
+
 }
 
 function getSafetyRating(num_rating) {
@@ -33,20 +50,29 @@ function getSafetyRating(num_rating) {
     }
 }
 
-function getWalkScore(route) {
+
+function getRouteScore(route) {
     let bounds = route["bounds"]
-    let crimes = getNearbyCrimes(bounds);
+    let crimes = getNearbyCrimes(route);
     let finalScore = 0;
-    for (let step of routes["legs"][0]["steps"]) {
+    for (let step of route["legs"][0]["steps"]) {
         finalScore += stepScore(step, crimes);
     }
-    return finalScore / route["legs"]["steps"].length;
+
+    return finalScore / route["legs"][0]["steps"].length;
 }
 
-//change later... maybe
-function getNearbyCrimes(bounds) {
-    let diagonal = getDistance(bounds["northeast"], bounds["southwest"]);
-    return getCrimes({ lat: latCenter, lon: lonCenter }, diagonal / 2);
+
+ function getNearbyCrimes(route) {
+    let bounds = route["bounds"];
+    let diagonal = getDistance(bounds["northeast"]["lat"],bounds["southwest"]["lat"], bounds["northeast"]["lng"],bounds["southwest"]["lng"]);
+    let latCenter = (bounds["northeast"]["lat"] + bounds["southwest"]["lat"]) / 2;
+    let lonCenter = (bounds["northeast"]["lng"] + bounds["southwest"]["lng"]) / 2;
+    let crimeURL = resolveCrimeURL(latCenter, lonCenter, diagonal / 2);
+
+    request.open("GET", crimeURL, false);
+    request.send();
+    return JSON.parse(request.responseText)["crimes"];
 }
 
 
@@ -64,13 +90,13 @@ function stepScore(step, crimes) {
         }
     }
 
-    return score / crimes.length;
+    return score;
 }
 
 function farthestCrimeDistance(crimes, start, end) {
     let farthest = 0
     for (let crime of crimes) {
-        let distance = getDistance(start, crime) + getDistance(end, crime);
+        let distance = getDistance(start["lat"],start["lng"], crime["lat"], crime["lon"]) + getDistance(end["lat"],end["lng"], crime["lat"],crime["lon"]);
         if (distance > farthest) {
             farthest = distance;
         }
@@ -80,13 +106,14 @@ function farthestCrimeDistance(crimes, start, end) {
 
 function getDistance(lat1, lon1, lat2, lon2) {
     var R = 3959; // Radius of the earth in miles
-    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    var dLat = deg2rad(lat2 - lat1);
     var dLon = deg2rad(lon2 - lon1);
     var a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2)
         ;
+
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
     return d;
