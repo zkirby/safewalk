@@ -28,17 +28,22 @@ export default class MapSection extends React.Component {
               longitude: crime.lon,
             }}
         >
-        <Image
-          resizeMode={Image.resizeMode.cover}
-          style={{
-            width: 25,
-            height: 25,
-            borderRadius:25/2,
-            overflow:'hidden',
-            backgroundColor:'#EB5757',
-          }}
-          source={require('../assets/images/alert.svg')}
-        />
+          <Image
+            resizeMode={Image.resizeMode.cover}
+            style={{
+              width: 25,
+              height: 25,
+              borderRadius:25/2,
+              overflow:'hidden',
+              backgroundColor:'#EB5757',
+            }}
+            source={require('../assets/images/alert.svg')}
+          />
+          <MapView.Callout style={{width:120}}>
+            <View>
+              <Text style = {{fontSize: 12}}>{crime.type} {"\n"}{crime.date}</Text>
+            </View>
+          </MapView.Callout>
         </MapView.Marker>
       );
     })
