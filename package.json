@@ -15,6 +15,11 @@
     "ios": "react-native-scripts ios",
     "test": "jest"
   },
+  "rnpm": {
+      "assets": [
+        "./assets/fonts/"
+          ]
+  },
   "dependencies": {
     "expo": "^26.0.0",
     "react": "16.3.0",

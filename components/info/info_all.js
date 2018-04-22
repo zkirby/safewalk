@@ -35,9 +35,8 @@ export default class InfoAll extends React.Component  {
 const styles = {
     container: {
         height: "20%",
-        width: "100%",
+        width: "300px",
         backgroundColor: "#FAFAFA",
-
         
     },
     text: {
