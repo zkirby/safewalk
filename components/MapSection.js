@@ -6,9 +6,9 @@ export default class MapSection extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      allRoutes: allRouteLines();
-      allCrimes: allCrimeMarkers();
-      currentRoute: allRouteLines();
+      allRoutes: allRouteLines(),
+      allCrimes: allCrimeMarkers(),
+      currentRoute: allRouteLines(),
     };
 
     this.props.pubsub.subscribe("swipe", (data) => {
