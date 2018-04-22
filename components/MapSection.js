@@ -83,6 +83,7 @@ var {height, width} = Dimensions.get('window');
 const styles = {
   map: { 
     width: width, 
-    height: "65%"}
+    height: "60%",
+  }
 }
 

@@ -3,6 +3,7 @@ import MapSection from './components/MapSection';
 import SearchBar from './components/SearchBar';
 import { StyleSheet, Text, View } from 'react-native';
 import InfoAll from './components/info/info_all';
+import SwiperView from './components/SwiperView';
 
 export default class App extends React.Component {
   render() {
