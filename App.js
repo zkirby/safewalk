@@ -5,14 +5,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import InfoAll from './components/info/info_all';
 import SwiperView from './components/SwiperView';
 import Event from './assets/psub';
-import { getSafetyRating } from './assets/utils';
+import utils from './assets/utils';
 
 export default class App extends React.Component {
   render() {
-
     let pubevent = new Event();
-
-    let routes = getRoutes();
+    let routes = utils.getRoutesAndScores("UC Berkeley", "2534 Piedmont Ave, Berkeley CA");
 
     let render_views = [];
     let avg_rating = 0;
@@ -20,11 +18,11 @@ export default class App extends React.Component {
 
     for (let i=0; i<routes.length; i++) {
         let { duration } = routes[i][1]["legs"];
-        let rating = getSafetyRating(routes[i][0]);
+        let rating = utils.getSafetyRating(routes[i][0]);
         avg_duration += duration;
         avg_rating += rating;
 
-        render_views.push(<Info name={"Route" + (i+1)} rating={rating} time={duration}/>)
+        render_views.push(<Info key={i + ''} name={"Route" + (i+1)} rating={rating} time={duration}/>)
     }
 
     return (
@@ -35,7 +33,7 @@ export default class App extends React.Component {
           crimes={FakeCrimeData}
           pubsub={pubevent}
         />
-        <SwiperView pubsub={pubevent} views={[<InfoAll avg_dur={avg_duration/render_views.length} rating={getSafetyRating(avg_rating/render_views.length)} rlen={render_views.length}/>, ...render_views]}/>
+        <SwiperView pubsub={pubevent} views={[<InfoAll avg_dur={avg_duration/render_views.length} rating={utils.getSafetyRating(avg_rating/render_views.length)} rlen={render_views.length}/>, ...render_views]}/>
       </View>
     );
   }

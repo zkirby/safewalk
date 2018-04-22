@@ -13,9 +13,9 @@ const crime_multipliers = {
 }
 
 
- function getRoutesAndScores(start, end) {
+export function getRoutesAndScores(start, end) {
     let mapsURL = resolveMapsURL(start, end);
-    request.open("GET", mapsURL, false);
+    request.open("GET", mapsURL, true);
     request.send();
     let out = [];
     let routes = JSON.parse(request.responseText)["routes"];
@@ -40,7 +40,7 @@ function resolveMapsURL(start, end) {
 
 }
 
-function getSafetyRating(num_rating) {
+export function getSafetyRating(num_rating) {
     if (num_rating < 40) {
         return { message: "Low Risk", color: "#6FCF97" }
     } else if (num_rating < 70) {
@@ -70,7 +70,7 @@ function getRouteScore(route) {
     let lonCenter = (bounds["northeast"]["lng"] + bounds["southwest"]["lng"]) / 2;
     let crimeURL = resolveCrimeURL(latCenter, lonCenter, diagonal / 2);
 
-    request.open("GET", crimeURL, false);
+    request.open("GET", crimeURL, true);
     request.send();
     return JSON.parse(request.responseText)["crimes"];
 }
@@ -123,4 +123,4 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 
-
+export default { getRoutesAndScores, getSafetyRating };
