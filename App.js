@@ -1,20 +1,30 @@
 import React from 'react';
 import MapSection from './components/MapSection';
-// import { GoogleMap, Marker } from "react-google-maps"
+import SearchBar from './components/SearchBar';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default class App extends React.Component {
   render() {
     return (
-      <View>
+      <View style={styles.outerContainer}>
+        <SearchBar />
         <MapSection 
-          crimes={FakeCrimeData}
           mapData={GoogleMapData}
+          crimes={FakeCrimeData}
         />
       </View>
     );
   }
 }
+
+const styles = {
+  outerContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
+  }
+}
+
 const GoogleMapData = {
     "geocoded_waypoints": [
         {

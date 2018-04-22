@@ -69,6 +69,9 @@ export default class MapSection extends React.Component {
               latitudeDelta: latDelta,
               longitudeDelta: lonDelta,
             }}
+            showUserLocation={true}
+            followsUserLocation={true}
+            scrollEnabled ={true}
           >
           {this.allCrimeMarkers()}
           {this.allRouteLines()}
@@ -78,6 +81,8 @@ export default class MapSection extends React.Component {
 }
 var {height, width} = Dimensions.get('window');
 const styles = {
-  map: { width: width, height: height }
+  map: { 
+    width: width, 
+    height: "80%"}
 }
 
