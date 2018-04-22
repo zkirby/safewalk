@@ -83,7 +83,7 @@ export default class MapSection extends React.Component {
             scrollEnabled ={true}
           >
           {this.state.allCrimes}
-          {this.state.allRoutes}
+          {this.state.currentRoute}
       </MapView>
     );
   }
