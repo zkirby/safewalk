@@ -20,6 +20,8 @@ export default class Event {
     }
 
     publish(event, data) {
-        this.names[event].map((fn) => (fn(data)));
+        if(this.names[event]) {
+            this.names[event].map((fn) => (fn(data)));
+        }
     }
 }

@@ -5,19 +5,22 @@ import {
   Text,
   View
 } from 'react-native';
+import store from '../store/store';
+import { connect } from 'react-redux';
 
 import Swiper from 'react-native-swiper';
 
-export default class SwiperView extends Component {
+class SwiperView extends Component {
 
   constructor(props) {
     super(props);
   } 
 
+
   render(){
     return (
       <Swiper onIndexChanged={(index)=>{ this.props.pubsub.publish("swipe", index) }} style={styles.wrapper} showsButtons={true}>
-        { this.props.views.map((x) => (<View style={styles.slide1}>{x}</View>)) }
+        { this.props.children.map((x) => (<View style={styles.slide1}>{x}</View>)) }
       </Swiper>
     );
   }
@@ -51,3 +54,11 @@ const styles = StyleSheet.create({
   }
 })
 
+
+const mapStateToProps = state => ({
+  views: state.views
+});
+
+const mapDispatchToProps = dispatch => {};
+
+export default SwiperView;

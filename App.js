@@ -7,8 +7,11 @@ import Info from './components/info/info';
 import SwiperView from './components/SwiperView';
 import Event from './assets/psub';
 import utils from './assets/utils';
+import store from './store/store';
+import { connect } from 'react-redux';
+// import { Provider } from 'react-redux';
 
-export default class App extends React.Component {
+class App extends React.Component {
 
     constructor(props) {
         super(props);
@@ -63,8 +66,8 @@ export default class App extends React.Component {
         let duration = 0;
         let i = 1;
         for (let route of routes) {
-            duration = route["route"]["legs"][0]["duration"];
-            rating = utils.getSafetyRating(route["score"]);
+            duration = route["route"]["legs"][0]["duration"]["text"];
+            rating = route["score"];
             avg_duration += duration;
             avg_rating += rating;
 
@@ -73,16 +76,15 @@ export default class App extends React.Component {
         }
 
         return (
-        <View style={styles.outerContainer}>
-            {/* <SearchBar pubsub={this.pubevent}/> */}
-            {/* <MapSection 
-            mapData={routes}
-            crimes={FakeCrimeData}
-            pubsub={this.pubevent}
-            /> */}
-            <Text>NOOOO</Text>
-            <SwiperView views={render_views}/>
-        </View>
+            <View style={styles.outerContainer}>
+                 <SearchBar />
+                 {/* <MapSection 
+                mapData={routes}
+                crimes={FakeCrimeData}
+                pubsub={this.pubevent}
+                /> */}
+                <SwiperView pubsub={this.pubevent}> { render_views } </SwiperView>
+            </View> 
         );
     }
 }
@@ -95,6 +97,27 @@ const styles = {
   }
 }
 
+
+const mapStateToProps = state => ({
+
+});
+
+const mapDispatchToProps = dispatch => {
+    return {
+    updateView: (view) => {
+        dispatch({
+            type:"UPDATE-VIEWS",
+            payload: view
+        })
+        }
+    }
+};
+  
+export default App;
+
+/*
+
+*/
 const GoogleMapData = {
     "geocoded_waypoints": [
         {
