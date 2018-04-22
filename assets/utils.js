@@ -13,16 +13,24 @@ const crime_multipliers = {
 }
 
 
- function getRoutesAndScores(start, end) {
-    let mapsURL = resolveMapsURL(start, end);
-    request.open("GET", mapsURL, false);
-    request.send();
-    let out = [];
-    let routes = JSON.parse(request.responseText)["routes"];
-    for (let route of routes) {
-        out.push({ score: getRouteScore(route), route: route });
-    }
-    return out;
+
+function getRoutesAndScores(start, end) {
+    return new Promise(function (resolve, reject) {
+        let mapsURL = resolveMapsURL(start, end);
+        request.open("GET", mapsURL, true);
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                let out = [];
+                console.log(request.responseText);
+                let routes = JSON.parse(request.responseText)["routes"];
+                for (let route of routes) {
+                    addRouteScore(route, out)
+                }
+                return out;
+            }
+        }
+        request.send();
+    })
 }
 
 
@@ -50,15 +58,30 @@ function getSafetyRating(num_rating) {
     }
 }
 
+function addRouteScore(route, out) {
+    let bounds = route["bounds"];
+    let diagonal = getDistance(bounds["northeast"]["lat"],bounds["southwest"]["lat"], bounds["northeast"]["lng"],bounds["southwest"]["lng"]);
+    let latCenter = (bounds["northeast"]["lat"] + bounds["southwest"]["lat"]) / 2;
+    let lonCenter = (bounds["northeast"]["lng"] + bounds["southwest"]["lng"]) / 2;
+    let crimeURL = resolveCrimeURL(latCenter, lonCenter, diagonal / 2);
 
-function getRouteScore(route) {
+    request.open("GET", crimeURL, true);
+    request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log(request.responseText);
+            let crimes = JSON.parse(request.responseText)["crimes"];
+            out.push({ score: getRouteScore(route, crimes), route: route });
+        }
+    };
+    request.send();
+}
+
+function getRouteScore(route, crimes) {
     let bounds = route["bounds"]
-    let crimes = getNearbyCrimes(route);
     let finalScore = 0;
     for (let step of route["legs"][0]["steps"]) {
         finalScore += stepScore(step, crimes);
     }
-
     return finalScore / route["legs"][0]["steps"].length;
 }
 
@@ -70,9 +93,14 @@ function getRouteScore(route) {
     let lonCenter = (bounds["northeast"]["lng"] + bounds["southwest"]["lng"]) / 2;
     let crimeURL = resolveCrimeURL(latCenter, lonCenter, diagonal / 2);
 
-    request.open("GET", crimeURL, false);
+    request.open("GET", crimeURL, true);
+    request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log(request.responseText);
+            return JSON.parse(request.responseText)["crimes"];
+        }
+    };
     request.send();
-    return JSON.parse(request.responseText)["crimes"];
 }
 
 
