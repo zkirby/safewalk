@@ -13,7 +13,6 @@ const crime_multipliers = {
 }
 
 
-
 function getRoutesAndScores(start, end) {
     return new Promise(function (resolve, reject) {
         let mapsURL = resolveMapsURL(start, end);
@@ -23,14 +22,17 @@ function getRoutesAndScores(start, end) {
                 let out = [];
                 console.log(request.responseText);
                 let routes = JSON.parse(request.responseText)["routes"];
+                console.log(routes);
                 for (let route of routes) {
-                    addRouteScore(route, out)
+                    console.log('HAY');
+                    addRouteScore(route, out);
                 }
-                return out;
+                resolve(out);
             }
         }
         request.send();
-    })
+        
+    });
 }
 
 
@@ -151,4 +153,4 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 
-
+// export default { getRoutesAndScores, getSafetyRating };

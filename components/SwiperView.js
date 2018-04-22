@@ -9,18 +9,15 @@ import {
 import Swiper from 'react-native-swiper';
 
 export default class SwiperView extends Component {
+
+  constructor(props) {
+    super(props);
+  } 
+
   render(){
     return (
-      <Swiper style={styles.wrapper} showsButtons={true}>
-        <View style={styles.slide1}>
-           <Text> SOMETHING GOES HERE </Text> 
-        </View>
-        <View style={styles.slide2}>
-          <Text style={styles.text}>Beautiful</Text>
-        </View>
-        <View style={styles.slide3}>
-          <Text style={styles.text}>And simple</Text>
-        </View>
+      <Swiper onIndexChanged={(index)=>{ this.props.pubsub.publish("swipe", index) }} style={styles.wrapper} showsButtons={true}>
+        { this.props.views.map((x) => (<View style={styles.slide1}>{x}</View>)) }
       </Swiper>
     );
   }
