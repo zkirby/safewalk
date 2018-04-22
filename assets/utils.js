@@ -1,4 +1,11 @@
-const spotcrime = require('spotcrime')
+const request = new XMLHttpRequest();
+let url = resolveCrimeURL(37.3702, -122.262, 0.2);
+console.log(url);
+request.open("GET",url,false);
+
+request.send();
+console.log(request.responseText);
+
 const crime_multipliers = {
     "Arrest": .2,
     "Other": .1,
@@ -11,7 +18,12 @@ const crime_multipliers = {
     "Robbery": .7
 }
 
-export default function getSafetyRating(num_rating) {
+function resolveCrimeURL(lat, lon, radius){
+    return "https://api.spotcrime.com/crimes.json?lat=" + lat + "&lon=" + lon + "&radius=" + radius 
+    + "&key=heythisisforpublicspotcrime.comuse-forcommercial-or-research-use-call-877.410.1607-or-email-pyrrhus-at-spotcrime.com"
+}
+
+function getSafetyRating(num_rating) {
     if (num_rating < 40) {
         return { message: "Low Risk", color: "#6FCF97" }
     } else if (num_rating < 70) {
@@ -23,7 +35,7 @@ export default function getSafetyRating(num_rating) {
 
 function getWalkScore(route) {
     let bounds = route["bounds"]
-    let crimes = getCrimes(bounds);
+    let crimes = getNearbyCrimes(bounds);
     let finalScore = 0;
     for (let step of routes["legs"][0]["steps"]) {
         finalScore += stepScore(step, crimes);
@@ -32,9 +44,9 @@ function getWalkScore(route) {
 }
 
 //change later... maybe
-function getCrimes(bounds) {
+function getNearbyCrimes(bounds) {
     let diagonal = getDistance(bounds["northeast"], bounds["southwest"]);
-    return spotcrime.getCrimes({ lat: latCenter, lon: lonCenter }, diagonal / 2);
+    return getCrimes({ lat: latCenter, lon: lonCenter }, diagonal / 2);
 }
 
 
