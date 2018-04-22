@@ -40,9 +40,12 @@ const styles = {
 		backgroundColor: "#fafafa",
 		paddingLeft: 24,
 		paddingRight: 24,
+		paddingBottom: 24,
+		paddingTop: 24,
 		flex: 1,
 		flexDirection: "column",
-		justifyContent: "center"
+		justifyContent: "center",
+		zIndex: 10,
 	},
 
 	button: {
