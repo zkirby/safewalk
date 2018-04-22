@@ -5,14 +5,14 @@ import { Text, View } from 'react-native';
 export default class Info extends React.Component  {
     render () {
 
-        const { name, rating, time } = this.props();
-        const rating = { "message": "unsafe", "color":"#EB5757" };
+        const { name, rating, time } = this.props;
+        const ratings = { "message": "unsafe", "color":"#EB5757" };
 
         return (
             <View id="info" style={styles.container}>
                 <View id="lower_text_body" style={styles.textBox}>
                     <Text className="routes-name" style={styles.title}> {name} </Text>
-                    <Text className="average_safety" style={Object.assign({"color":rating["color"]}, styles.coloredText)}>Safety Rating: { rating["message"] }</Text>
+                    <Text className="average_safety" style={Object.assign({"color":ratings["color"]}, styles.coloredText)}>Safety Rating: { ratings["message"] }</Text>
                     <Text className="average_time" style={styles.text}>Estimated Time: { time }</Text>
                 </View> 
             </View>

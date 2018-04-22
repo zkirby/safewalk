@@ -3,6 +3,7 @@ import MapSection from './components/MapSection';
 import SearchBar from './components/SearchBar';
 import { StyleSheet, Text, View } from 'react-native';
 import InfoAll from './components/info/info_all';
+import Info from './components/info/info';
 import SwiperView from './components/SwiperView';
 import Event from './assets/psub';
 import utils from './assets/utils';
@@ -13,41 +14,74 @@ export default class App extends React.Component {
         super(props);
         this.pubevent = new Event();
         this.state = {
-            route: ["UC Berkeley", "2534 Piedmont Ave, Berkeley CA"]
+            route: ["MotorCity Casino Hotel, Michigan", "Wayne State University, Michigan"],
+            routes: [],
+            counter: 0
         }
-
-        this.pubevent.subscribe("new-search", (data)=>{
-            this.setState({ route: data });
-        })
     }
 
-    render() {
-        
+    componentDidMount() {
         let [start, end] = this.state.route;
-        let routes = utils.getRoutesAndScores(start, end);
+        let routes = [];
+        utils.getRoutesAndScores(start, end).then((data)=>{
+            for (let y of data) {
+                y.then((d)=>{
+                    routes.push(d);
+                    this.setState({routes});
+                })
+                
+            }            
+        });
 
+        // this.pubevent.subscribe("new-search", (data)=>{
+        //     this.setState({ route: data });
+        // })
+    }
+
+    componentWillUnmount() {
+        console.log("STATE", this.state.routes);
+    }
+
+    // componentDidUpdate(prevProps, prevState, snapshot) {
+    //     let [start, end] = this.state.route;
+    //     let routes = [];
+    //     utils.getRoutesAndScores(start, end).then((data)=>{
+    //         for (let y of data) {
+    //             y.then((d)=>routes.push(d))
+    //         }
+    //         this.setState({routes});
+    //     });
+	// }
+
+    render() {
+
+        let routes = this.state.routes;
         let render_views = [];
         let avg_rating = 0;
         let avg_duration = 0;
-
-        for (let i=0; i<routes.length; i++) {
-            let { duration } = routes[i][1]["legs"];
-            let rating = utils.getSafetyRating(routes[i][0]);
+        let rating = 0;
+        let duration = 0;
+        let i = 1;
+        for (let route of routes) {
+            duration = route["route"]["legs"][0]["duration"];
+            rating = utils.getSafetyRating(route["score"]);
             avg_duration += duration;
             avg_rating += rating;
 
-            render_views.push(<Info key={i + ''} name={"Route" + (i+1)} rating={rating} time={duration}/>)
+            render_views.push(<Info key={avg_duration + ''} name={"Route" + (i+1)} rating={rating} time={duration}/>)
+            i++;
         }
 
         return (
         <View style={styles.outerContainer}>
-            <SearchBar pubsub={this.pubevent}/>
-            <MapSection 
+            {/* <SearchBar pubsub={this.pubevent}/> */}
+            {/* <MapSection 
             mapData={routes}
             crimes={FakeCrimeData}
             pubsub={this.pubevent}
-            />
-            <SwiperView pubsub={this.pubevent} views={[<InfoAll avg_dur={avg_duration/render_views.length} rating={utils.getSafetyRating(avg_rating/render_views.length)} rlen={render_views.length}/>, ...render_views]}/>
+            /> */}
+            <Text>NOOOO</Text>
+            <SwiperView views={render_views}/>
         </View>
         );
     }

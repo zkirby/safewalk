@@ -1,17 +1,19 @@
 import React from 'react';
 import { Text, View } from 'react-native';
+import utils from '../../assets/utils';
 //import saftey from '../../assets/utils';
 
 export default class InfoAll extends React.Component  {
     render () {
 
         const {rating, avg_dur, rlen} = this.props;
+        let ratings = utils.getSafetyRating(rating);
          
         return (
             <View id="info_all" style={styles.container}>
                 <View id="lower_text_body" style={styles.textBox}>
                     <Text className="routes-found" style={styles.title}> {rlen} Routes Found </Text>
-                    <Text className="average_safety" style={Object.assign({"color":rating["color"]}, styles.coloredText)}>Average Safety: { rating["message"] }</Text>
+                    <Text className="average_safety" style={Object.assign({"color":ratings["color"]}, styles.coloredText)}>Average Safety: { ratings["message"] }</Text>
                     <Text className="average_time" style={styles.text}>Average Time: { avg_dur }</Text>
                 </View> 
             </View>

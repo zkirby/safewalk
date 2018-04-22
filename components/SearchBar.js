@@ -14,8 +14,8 @@ export default class SearchBar extends React.Component {
 	  }
 	  
 	shouldComponentUpdate(nextProps, nextState) {
-		const startLocation1 = nextState;
-		const destination1 = nextState;
+		const startLocation1 = nextState.startLocation;
+		const destination1 = nextState.destination;
 		const startLocation2 = this.state.startLocation;
 		const destination2 = this.state.destination;
 

@@ -13,29 +13,35 @@ const crime_multipliers = {
 }
 
 
-function getRoutesAndScores(start, end) {
-    return new Promise(function (resolve, reject) {
+export function getRoutesAndScores(start, end) {
+
+    let p = new Promise(function (resolve, reject) {
         let mapsURL = resolveMapsURL(start, end);
         request.open("GET", mapsURL, true);
         request.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                let out = [];
-                console.log(request.responseText);
+                //let out = [];
+                //console.log(request.responseText);
                 let routes = JSON.parse(request.responseText)["routes"];
-                console.log(routes);
-                for (let route of routes) {
-                    console.log('HAY');
-                    addRouteScore(route, out);
-                }
-                resolve(out);
+                //console.log(routes);
+                // for (let route of routes) {
+                //     console.log('HAY');
+                //     resolve(route, out);
+                // }
+                resolve(routes);
             }
         }
         request.send();
         
+    }).then((routes)=> {
+        let x = [];
+        for (let route of routes) {
+            x.push(addAllRouteScores(route))
+        }
+        return x;
     });
+    return p;
 }
-
-
 
 function resolveCrimeURL(lat, lon, radius) {
     return "https://api.spotcrime.com/crimes.json?lat=" + lat + "&lon=" + lon + "&radius=" + radius
@@ -50,7 +56,7 @@ function resolveMapsURL(start, end) {
 
 }
 
-function getSafetyRating(num_rating) {
+export function getSafetyRating(num_rating) {
     if (num_rating < 40) {
         return { message: "Low Risk", color: "#6FCF97" }
     } else if (num_rating < 70) {
@@ -60,22 +66,26 @@ function getSafetyRating(num_rating) {
     }
 }
 
-function addRouteScore(route, out) {
+function addAllRouteScores(route) {
+    let pp = new Promise((resolve, reject)=>{
     let bounds = route["bounds"];
     let diagonal = getDistance(bounds["northeast"]["lat"],bounds["southwest"]["lat"], bounds["northeast"]["lng"],bounds["southwest"]["lng"]);
     let latCenter = (bounds["northeast"]["lat"] + bounds["southwest"]["lat"]) / 2;
     let lonCenter = (bounds["northeast"]["lng"] + bounds["southwest"]["lng"]) / 2;
     let crimeURL = resolveCrimeURL(latCenter, lonCenter, diagonal / 2);
 
+    let request = new XMLHttpRequest();
     request.open("GET", crimeURL, true);
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            console.log(request.responseText);
+            //console.log(request.responseText);
             let crimes = JSON.parse(request.responseText)["crimes"];
-            out.push({ score: getRouteScore(route, crimes), route: route });
+            resolve({ score: getRouteScore(route, crimes), route: route });
         }
-    };
-    request.send();
+        };
+        request.send();
+    });
+    return pp
 }
 
 function getRouteScore(route, crimes) {
@@ -88,22 +98,22 @@ function getRouteScore(route, crimes) {
 }
 
 
- function getNearbyCrimes(route) {
-    let bounds = route["bounds"];
-    let diagonal = getDistance(bounds["northeast"]["lat"],bounds["southwest"]["lat"], bounds["northeast"]["lng"],bounds["southwest"]["lng"]);
-    let latCenter = (bounds["northeast"]["lat"] + bounds["southwest"]["lat"]) / 2;
-    let lonCenter = (bounds["northeast"]["lng"] + bounds["southwest"]["lng"]) / 2;
-    let crimeURL = resolveCrimeURL(latCenter, lonCenter, diagonal / 2);
+//  function getNearbyCrimes(route) {
+//     let bounds = route["bounds"];
+//     let diagonal = getDistance(bounds["northeast"]["lat"],bounds["southwest"]["lat"], bounds["northeast"]["lng"],bounds["southwest"]["lng"]);
+//     let latCenter = (bounds["northeast"]["lat"] + bounds["southwest"]["lat"]) / 2;
+//     let lonCenter = (bounds["northeast"]["lng"] + bounds["southwest"]["lng"]) / 2;
+//     let crimeURL = resolveCrimeURL(latCenter, lonCenter, diagonal / 2);
 
-    request.open("GET", crimeURL, true);
-    request.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            console.log(request.responseText);
-            return JSON.parse(request.responseText)["crimes"];
-        }
-    };
-    request.send();
-}
+//     request.open("GET", crimeURL, true);
+//     request.onreadystatechange = function() {
+//         if (this.readyState == 4 && this.status == 200) {
+//             console.log(request.responseText);
+//             return JSON.parse(request.responseText)["crimes"];
+//         }
+//     };
+//     request.send();
+// }
 
 
 
@@ -153,4 +163,4 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 
-// export default { getRoutesAndScores, getSafetyRating };
+export default { getRoutesAndScores, getSafetyRating };
