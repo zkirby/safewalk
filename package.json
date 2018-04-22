@@ -22,7 +22,13 @@
   },
   "dependencies": {
     "expo": "^26.0.0",
+    "google-maps-react": "^2.0.0",
     "react": "16.3.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-26.0.0.tar.gz"
+    "react-google-maps": "^9.4.5",
+    "react-native": "~0.54.1",
+    "react-native-google-maps-directions": "^2.0.0",
+    "react-native-google-places-autocomplete": "^1.3.6",
+    "react-native-maps": "^0.21.0",
+    "save": "^2.3.2"
   }
 }
