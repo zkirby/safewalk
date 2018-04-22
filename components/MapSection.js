@@ -6,7 +6,16 @@ export default class MapSection extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      allRoutes: allRouteLines();
+      allCrimes: allCrimeMarkers();
+      currentRoute: allRouteLines();
     };
+
+    this.props.pubsub.subscribe("swipe", (data) => {
+      this.setState({
+        allRoutes: data == 0 ? this.state.allRoutes : this.state.allRoutes[data - 1],
+      });
+    })
   }
 
   allCrimeMarkers() {
@@ -73,8 +82,8 @@ export default class MapSection extends React.Component {
             followsUserLocation={true}
             scrollEnabled ={true}
           >
-          {this.allCrimeMarkers()}
-          {this.allRouteLines()}
+          {this.state.allCrimes}
+          {this.state.currentRoute}
       </MapView>
     );
   }
